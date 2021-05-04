@@ -82,7 +82,50 @@ router.post('/register', (req, res) => {
 
 });
 
+/*
+  Rotas planejadas:
+  @route POST api/users/login
+  @desc Logando o usuário
+  @access Público
+*/
+router.post('/login', (req, res) => {
+    User.findOne({ username: req.body.username }).then(user => {
+      if(!user) {
+        return res.status(404).json({
+          msg : "Usuário não encontrado",
+          success : false
+        });
 
+        // Se o usuário existir, comparamos a senha
+        bcrypt.compare(req.body.senha, user.senha).then(isMatch => {
+          if(isMatch) {
+            // Senha está correta, enviar o token jason para o user
+            const payload = {
+              _id : user._id,
+              usuario : user.usuario,
+              nome : user.nome,
+              email : user.email
+            }
+            jwt.sign(payload, key, {
+              expiresIn: 604800
+            }), (err, token) => {
+              res.status(200).json({
+                sucess: true,
+                token: `Portador: ${token}`,
+                msg: "Você está logado!"
+              });
+            }
+
+          } else {
+            return res.status(404).json({
+              msg : "Senha incorreta!",
+              success : false
+            });
+          }
+        })
+      }
+    })
+});
 
 
 module.exports = router;
