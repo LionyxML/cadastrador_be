@@ -15,7 +15,7 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
-  sexo: {
+  telefone: {
     type: String,
     required: true
   },
@@ -34,7 +34,11 @@ const UserSchema = new Schema({
   criacao: {
     type: Date,
     default: Date.now
+  },
+  usuario: {
+    type: String,
+    default: true
   }
 });
 
-module.exports = User = mongoose.export('users', UserSchema);
+module.exports = User = mongoose.model('users', UserSchema);
