@@ -8,7 +8,7 @@ const User = require('../../model/User');
 
 
 /*
-  Rotas planejadas:
+  Rota planejada:
   @route POST api/users/register
   @desc Registra o usuário
   @access Público
@@ -83,7 +83,7 @@ router.post('/register', (req, res) => {
 });
 
 /*
-  Rotas planejadas:
+  Rota planejada:
   @route POST api/users/login
   @desc Logando o usuário
   @access Público
@@ -113,7 +113,7 @@ router.post('/login', (req, res) => {
             }, (err, token) => {
               res.status(200).json({
                 sucess: true,
-                token: `Portador: ${token}`,
+                token: `BEARER ${token}`,
                 msg: "Você está logado!"
               })
             })
@@ -128,5 +128,18 @@ router.post('/login', (req, res) => {
     });
 });
 
+/*
+  Rota planejada:
+  @route POST api/users/profile
+  @desc Retorna os dados do usuário
+  @access Privado
+*/
+router.get('/profile', passport.authenticate('jwt', {
+  session : false
+}), (req, res) => {
+  return res.json({
+     user: req.user
+  });
+});
 
 module.exports = router;

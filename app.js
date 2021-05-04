@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
-
+const passport = require('passport');
 
 // Inicialização do app
 const app = express();
@@ -20,6 +20,8 @@ app.use(cors());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(passport.initialize());
+require('./config/passport')(passport);
 
 // Configuração da conexão ao bando de dados
 const db = require('./config/keys').mongoURI;
