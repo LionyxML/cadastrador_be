@@ -89,16 +89,18 @@ router.post('/register', (req, res) => {
   @access Público
 */
 router.post('/login', (req, res) => {
-    User.findOne({ username: req.body.username }).then(user => {
+    User.findOne({
+      usuario: req.body.usuario
+    }).then(user => {
       if(!user) {
         return res.status(404).json({
           msg : "Usuário não encontrado",
           success : false
         });
-
+      }
         // Se o usuário existir, comparamos a senha
         bcrypt.compare(req.body.senha, user.senha).then(isMatch => {
-          if(isMatch) {
+          if (isMatch) {
             // Senha está correta, enviar o token jason para o user
             const payload = {
               _id : user._id,
@@ -108,13 +110,13 @@ router.post('/login', (req, res) => {
             }
             jwt.sign(payload, key, {
               expiresIn: 604800
-            }), (err, token) => {
+            }, (err, token) => {
               res.status(200).json({
                 sucess: true,
                 token: `Portador: ${token}`,
                 msg: "Você está logado!"
-              });
-            }
+              })
+            })
 
           } else {
             return res.status(404).json({
@@ -123,8 +125,7 @@ router.post('/login', (req, res) => {
             });
           }
         })
-      }
-    })
+    });
 });
 
 
