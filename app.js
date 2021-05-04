@@ -31,9 +31,9 @@ mongoose.connect(db, { useNewUrlParser: true }).then( () => {
 
 
 // Rota de teste para debug inicial
-app.get('/', (req, res) => {
-  return res.send("<h1>Servidor inicializado com sucesso! </h1>");
-})
+// app.get('/', (req, res) => {
+//   return res.send("<h1>Servidor inicializado com sucesso! </h1>");
+// })
 
 // Configuração da porta de serviço da aplicação e start
 const PORT = process.env.PORT || 5000;
