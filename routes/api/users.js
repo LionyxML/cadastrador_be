@@ -113,6 +113,7 @@ router.post('/login', (req, res) => {
             }, (err, token) => {
               res.status(200).json({
                 sucess: true,
+                usuario: user,
                 token: `BEARER ${token}`,
                 msg: "Você está logado!"
               })
