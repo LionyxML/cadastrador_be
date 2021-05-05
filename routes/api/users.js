@@ -112,7 +112,7 @@ router.post('/login', (req, res) => {
               expiresIn: 604800
             }, (err, token) => {
               res.status(200).json({
-                sucess: true,
+                success: true,
                 usuario: user,
                 token: `BEARER ${token}`,
                 msg: "Você está logado!"
