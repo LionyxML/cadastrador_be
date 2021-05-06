@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const key = require('../../config/keys').secret;
 const User = require('../../model/User');
+const multer = require('multer');
+var path = require('path');
 
 
 /*
@@ -142,5 +144,62 @@ router.get('/profile', passport.authenticate('jwt', {
      user: req.user
   });
 });
+
+/*
+  Rota planejada:
+  @route POST api/users/upload
+  @desc Insere o avatar do usuário na pasta uploads
+  @access Privado no futuro
+*/
+
+// var storage =   multer.diskStorage({
+//   dest: function (req, file, callback) {
+//     fs.mkdir('./uploads/', function(err) {
+//         if(err) {
+//             console.log(err.stack)
+//         } else {
+//             callback(null, './uploads');
+//         }
+//     })
+//   },
+//   filename: function (req, file, callback) {
+//     callback(null, file.fieldname + '-' + Date.now());
+//   }
+// });
+
+var storage = multer.diskStorage(
+    {
+      destination: function (req, file, cb) {
+        cb(false, './uploads')
+      },
+      filename: function (req, file, cb) {
+        cb(null, file.originalname )
+      }
+    }
+);
+
+const MAX_SIZE = 2000000;
+// const upload = multer({ storage: storage });
+
+const upload = multer({
+  // dest: './uploads/',
+  storage: storage,
+  fileFilter: function (req, file, callback) {
+        var ext = path.extname(file.originalname);
+        if(ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
+            return callback(new Error('Only images are allowed'))
+        }
+        callback(null, true)
+    },
+  limits: {
+    fileSize: MAX_SIZE
+  }
+});
+
+router.post('/upload', upload.single('file'), (req, res) => {
+  res.json({ file: req.file });
+});
+
+
 
 module.exports = router;
