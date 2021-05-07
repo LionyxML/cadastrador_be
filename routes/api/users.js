@@ -41,10 +41,10 @@ router.post('/register', (req, res) => {
   }).then(user => {
     if (user) {
       return res.status(400).json({
-        msg : "Nome de usuário já está opcupado"
+        msg : "Nome de usuário já está ocupado!"
       });
     }
-  });
+  }).catch(err => { res.send("error: " + err) });
 
   // Verifica se o e-mail é único no Banco
   User.findOne({
@@ -55,7 +55,11 @@ router.post('/register', (req, res) => {
         msg : "Email já está registrado. Esqueceu sua senha?"
       });
     }
-  });
+  }).catch(err => { res.send("error: " + err) });
+
+
+  // TODO: Aqui há um bug, refazer as verificações em sequência e
+  // criar uma restrição para a criação abaixo
 
   // Os dados são válidos e podemos registrar o usuário
   let newUser = new User({
@@ -79,7 +83,7 @@ router.post('/register', (req, res) => {
           success: true,
           msg: "O usuário foi registrado com sucesso!"
         });
-      });
+      }).catch(err => { res.send("error: " + err) });
     });
   });
 
@@ -99,7 +103,7 @@ router.post('/login', (req, res) => {
         return res.status(404).json({
           msg : "Usuário não encontrado",
           success : false
-        });
+        }).catch(err => { res.send("error: " + err) });
       }
         // Se o usuário existir, comparamos a senha
         bcrypt.compare(req.body.senha, user.senha).then(isMatch => {
@@ -128,8 +132,8 @@ router.post('/login', (req, res) => {
               success : false
             });
           }
-        })
-    });
+        }).catch(err => { res.send("error: " + err) })
+    }).catch(err => { res.send("error: " + err) });
 });
 
 /*
@@ -142,6 +146,7 @@ router.get('/profile', passport.authenticate('jwt', {
   session : false
 }), (req, res) => {
 
+  // TODO: caçar a operação async que está gerando os warnings por não ter catch
 
   // TODO: esse insert feito depois da criação do model de usuário, com tempo, passar para o User.js
   // Procura por uma foto do usuário, se não houver uma, repassa o nome noone.png
