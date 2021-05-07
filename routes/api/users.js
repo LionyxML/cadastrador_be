@@ -27,9 +27,9 @@ router.post('/register', (req, res) => {
     usuario,
     senha,
     senhaRepetida
-  } = req.body;
+  } = req.body
 
-  if(senha != senhaRepetida) {
+  if(senha !== senhaRepetida) {
     return res.status(400).json({
       msg : "Senhas não conferem"
     });
@@ -181,22 +181,6 @@ router.get('/profile', passport.authenticate('jwt', {
   @desc Insere o avatar do usuário na pasta uploads
   @access Privado no futuro
 */
-
-// var storage =   multer.diskStorage({
-//   dest: function (req, file, callback) {
-//     fs.mkdir('./uploads/', function(err) {
-//         if(err) {
-//             console.log(err.stack)
-//         } else {
-//             callback(null, './uploads');
-//         }
-//     })
-//   },
-//   filename: function (req, file, callback) {
-//     callback(null, file.fieldname + '-' + Date.now());
-//   }
-// });
-
 var storage = multer.diskStorage(
     {
       destination: function (req, file, cb) {
@@ -209,10 +193,8 @@ var storage = multer.diskStorage(
 );
 
 const MAX_SIZE = 2000000;
-// const upload = multer({ storage: storage });
 
 const upload = multer({
-  // dest: './uploads/',
   storage: storage,
   fileFilter: function (req, file, callback) {
         var ext = path.extname(file.originalname);
