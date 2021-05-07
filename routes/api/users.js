@@ -96,7 +96,7 @@ router.post('/login', (req, res) => {
       usuario: req.body.usuario
     }).then(user => {
       if(!user) {
-        return res.status(200).json({
+        return res.status(404).json({
           msg : "Usuário não encontrado",
           success : false
         });
@@ -123,7 +123,7 @@ router.post('/login', (req, res) => {
             })
 
           } else {
-            return res.status(200).json({
+            return res.status(404).json({
               msg : "Senha incorreta!",
               success : false
             });
