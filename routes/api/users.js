@@ -6,6 +6,7 @@ const passport = require('passport');
 const key = require('../../config/keys').secret;
 const User = require('../../model/User');
 const multer = require('multer');
+const glob = require('glob');
 var path = require('path');
 
 
@@ -95,7 +96,7 @@ router.post('/login', (req, res) => {
       usuario: req.body.usuario
     }).then(user => {
       if(!user) {
-        return res.status(404).json({
+        return res.status(200).json({
           msg : "Usuário não encontrado",
           success : false
         });
@@ -122,7 +123,7 @@ router.post('/login', (req, res) => {
             })
 
           } else {
-            return res.status(404).json({
+            return res.status(200).json({
               msg : "Senha incorreta!",
               success : false
             });
@@ -140,8 +141,37 @@ router.post('/login', (req, res) => {
 router.get('/profile', passport.authenticate('jwt', {
   session : false
 }), (req, res) => {
+
+
+  // TODO: esse insert feito depois da criação do model de usuário, com tempo, passar para o User.js
+  // Procura por uma foto do usuário, se não houver uma, repassa o nome noone.png
+  let found = glob.sync(path.join(__dirname+'../../../uploads/') + req.user.usuario + '.*');
+  let profilePic = "";
+  if (found.length !== 0) {
+    profilePic = found[0].split("/").pop();
+  } else {
+    profilePic = 'noone.png'
+  }
+
+  // req.user não é trivialmente copiável, fazer um ...req.user , map ou outra ação
+  // de objeto para criar a cópia de req.user + o avatar
+  var passingObj = {};
+  passingObj["usuario"] = req.user.usuario;
+  passingObj["_id"] = req.user._id;
+  passingObj["nome"] = req.user.nome;
+  passingObj["sobrenome"] = req.user.sobrenome;
+  passingObj["nascimento"] = req.user.nascimento;
+  passingObj["telefone"] = req.user.telefone;
+  passingObj["endereco"] = req.user.endereco;
+  passingObj["email"] = req.user.email;
+  passingObj["senha"] = req.user.senha;
+  passingObj["criacao"] = req.user.criacao;
+  passingObj["__v"] = req.user.__v;
+  passingObj["avatar"] = profilePic;
+
+  // Retorna o objeto procurado + o avatar encontrado
   return res.json({
-     user: req.user
+     user: passingObj
   });
 });
 
