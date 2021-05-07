@@ -11,9 +11,9 @@ npm install
 
 Em seguida, inicie o mongdb em localhost na porta 27017 (pode ser configurado em ./config/keys.js)
 
-## Compile e rode o servidor de desenvolvimento
+## Rode o servidor de desenvolvimento
 ```
-npm run serve
+node app.js
 ```
 ou
 ```
